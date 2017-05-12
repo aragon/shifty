@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="ui field big input">
-        <input type="text" name="amount" placeholder="Amount" v-model="amount">
+        <input type="text" name="amount" placeholder="Deposit amount" v-model="amount">
         <span class="conversion" v-if="amount > 0">~= {{ conversion.toFixed(2) }} ETH</span>
       </div>
     </div>
@@ -26,7 +26,7 @@
     <div class="field">
       <input type="text" name="ethAddress" placeholder="Ethereum address that will receive the tokens" v-model="ethAddress">
     </div>
-    <button class="ui primary huge fluid button">Buy tokens</button>
+    <button class="ui primary huge fluid button">Buy tokens <span v-if="amount">by sending {{ amount }} {{ selectedCoin }}</span></button>
   </form>
 </template>
 
@@ -38,7 +38,7 @@ export default {
   data() {
     return {
       error: undefined,
-      amount: 0,
+      amount: undefined,
       returnAddress: undefined,
       ethAddress: undefined,
     }

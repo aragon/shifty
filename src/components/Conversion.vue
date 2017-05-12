@@ -38,6 +38,10 @@ export default {
     }
     setMarketInfo()
     setInterval(() => setMarketInfo(), 30 * 1000)
+
+    this.$store.subscribe((mutation) => {
+      if (mutation.type === 'setSelectedCoin') setMarketInfo()
+    })
   },
 }
 </script>
