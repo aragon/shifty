@@ -6,7 +6,7 @@
     </div>
     <div class="two fields">
       <div class="field">
-        <div class="ui fluid search selection dropdown">
+        <div class="ui fluid search selection big dropdown">
           <input type="hidden" name="coin" v-bind:value="selectedCoin">
           <i class="dropdown icon"></i>
           <div class="default text">Select coin</div>
