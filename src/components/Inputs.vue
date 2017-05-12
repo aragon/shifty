@@ -1,5 +1,9 @@
 <template>
-  <form class="ui form">
+  <form class="ui form" v-on:submit.prevent="shift">
+    <div class="ui negative message" v-if="error">
+      <div class="header">Error</div>
+      <p>{{ error }}</p>
+    </div>
     <div class="two fields">
       <div class="field">
         <div class="ui fluid search selection dropdown">
@@ -12,16 +16,17 @@
         </div>
       </div>
       <div class="ui field big input">
-        <input type="text" placeholder="Amount" v-model="amount">
+        <input type="text" name="amount" placeholder="Amount" v-model="amount">
+        <span class="conversion" v-if="amount > 0">~= {{ conversion.toFixed(2) }} ETH</span>
       </div>
     </div>
     <div class="field">
-      <input type="text" placeholder="Ethereum address that will receive the tokens" v-model="ethAddress">
+      <input type="text" name="returnAddress" placeholder="Return address, in case the shift doesn't work" v-model="returnAddress">
     </div>
     <div class="field">
-      <input type="email" placeholder="Email for receipt (optional)" v-model="emailAddress">
+      <input type="text" name="ethAddress" placeholder="Ethereum address that will receive the tokens" v-model="ethAddress">
     </div>
-    <button class="ui primary huge fluid button">Send</button>
+    <button class="ui primary huge fluid button">Buy tokens</button>
   </form>
 </template>
 
@@ -30,6 +35,14 @@ import ShapeShift from '../lib/ShapeShift'
 
 export default {
   name: 'inputs',
+  data() {
+    return {
+      error: undefined,
+      amount: 0,
+      returnAddress: undefined,
+      ethAddress: undefined,
+    }
+  },
   computed: {
     coins() {
       return this.$store.state.coins
@@ -37,47 +50,46 @@ export default {
     selectedCoin() {
       return this.$store.state.selectedCoin
     },
-    amount: {
-      get() {
-        return this.$store.state.amount
-      },
-      set(value) {
-        this.$store.commit('setAmount', parseFloat(value))
-      },
+    conversion() {
+      return this.amount * this.$store.state.marketInfo.rate
     },
-    ethAddress: {
-      get() {
-        return this.$store.state.ethAddress
-      },
-      set(value) {
-        this.$store.commit('setEthAddress', value)
-      },
-    },
-    emailAddress: {
-      get() {
-        return this.$store.state.emailAddress
-      },
-      set(value) {
-        this.$store.commit('setEmailAddress', value)
-      },
+  },
+  methods: {
+    async shift() {
+      window.$('.dimmer').addClass('active')
+
+      const pair = this.$store.state.marketInfo.pair
+      const res = await ShapeShift.shift(pair, {
+        amount: this.conversion,
+        returnAddress: this.returnAddress,
+        withdrawalAddress: this.ethAddress,
+      })
+      if (res.error) {
+        this.error = res.error
+        window.$('.dimmer').removeClass('active')
+      } else {
+        window.location.href = `https://shapeshift.io/#/status/${res.success.orderId}`
+      }
     },
   },
   mounted() {
-    const setCoins = () => {
-      ShapeShift.coins().then((coins) => {
-        this.$store.commit('setCoins', coins)
-        requestAnimationFrame(() => window.$('.ui.dropdown').dropdown({
-          onChange: (coin) => {
-            this.$store.commit('setSelectedCoin', coin)
-          },
-        }))
-      })
-    }
-    setCoins()
-    setInterval(() => setCoins(), 60 * 1000)
+    ShapeShift.coins().then((coins) => {
+      this.$store.commit('setCoins', coins)
+      requestAnimationFrame(() => window.$('.ui.dropdown').dropdown({
+        onChange: (coin) => {
+          this.$store.commit('setSelectedCoin', coin)
+        },
+      }))
+    })
   },
 }
 </script>
 
 <style scoped>
+.conversion {
+  position: absolute;
+  top: 0.75rem;
+  right: 1.5rem;
+  color: #bababa;
+}
 </style>

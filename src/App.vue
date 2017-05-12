@@ -3,6 +3,10 @@
     <inputs></inputs>
     <div class="ui hidden divider"></div>
     <conversion></conversion>
+
+    <div class="ui inverted dimmer">
+      <div class="ui text loader">Loading</div>
+    </div>
   </div>
 </template>
 
@@ -22,5 +26,17 @@ export default {
 <style>
 body {
   background: #28394d url(https://shapeshift.io/images/bg.jpg) no-repeat center center;
+}
+#app {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+@media only screen and (max-width:767px) {
+  #app {
+    width: 100% !important;
+    margin: 0 !important;
+  }
 }
 </style>

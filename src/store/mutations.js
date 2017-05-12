@@ -2,7 +2,7 @@ export const appState = {
   coins: [],
   selectedCoin: 'BTC',
   ethAddress: undefined,
-  emailAddress: undefined,
+  marketInfo: {},
 }
 
 export const mutations = {
@@ -15,10 +15,13 @@ export const mutations = {
   setAmount(state, amount) {
     state.amount = amount
   },
+  setReturnAddress(state, addr) {
+    state.returnAddress = addr
+  },
   setEthAddress(state, addr) {
     state.ethAddress = addr
   },
-  setEmailAddress(state, addr) {
-    state.emailAddress = addr
+  setMarketInfo(state, marketInfo) {
+    state.marketInfo = marketInfo
   },
 }
