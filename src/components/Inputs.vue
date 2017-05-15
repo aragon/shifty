@@ -37,7 +37,7 @@ export default {
   name: 'inputs',
   data() {
     return {
-      error: undefined,
+      errorMsg: undefined,
       amount: undefined,
       returnAddress: undefined,
       ethAddress: undefined,
@@ -53,6 +53,13 @@ export default {
     conversion() {
       return this.amount * this.$store.state.marketInfo.rate
     },
+    error() {
+      let error = this.errorMsg
+      if (this.$store.state.marketInfo && this.$store.state.marketInfo.error) {
+        error = this.$store.state.marketInfo.error
+      }
+      return error
+    },
   },
   methods: {
     async shift() {
@@ -65,7 +72,7 @@ export default {
         withdrawalAddress: this.ethAddress,
       })
       if (res.error) {
-        this.error = res.error
+        this.errorMsg = res.error
         window.$('.dimmer').removeClass('active')
       } else {
         window.location.href = `https://shapeshift.io/#/status/${res.success.orderId}`

@@ -1,5 +1,5 @@
 <template>
-  <div class="ui equal width stackable grid">
+  <div class="ui equal width stackable grid" v-if="marketInfo">
     <div class="center aligned column">
       <label>Exchange rate</label>
       1 {{ selectedCoin }} = {{ marketInfo.rate }} ETH
