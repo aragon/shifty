@@ -44,6 +44,7 @@ body {
   #app {
     width: 100% !important;
     margin: 0 !important;
+    position: static;
   }
 }
 </style>
